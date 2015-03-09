@@ -79,3 +79,21 @@ export function processFiles(files:string[], opts:Options):Promise<ResultMap> {
 	});
 	return Promise.all(promises).then(()=> result);
 }
+
+export function processStdin() {
+		var options = utils.createDefaultFormatCodeOptions();
+    var content = ''
+
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('readable', function() {
+    var chunk = process.stdin.read();
+      if (chunk !== null) {
+        content += chunk
+      }
+    });
+
+    process.stdin.on('end', function() {
+				var formattedCode = formatter(content, options);
+        process.stdout.write(formattedCode)
+    });
+}

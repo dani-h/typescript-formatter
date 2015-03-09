@@ -31,6 +31,7 @@ var root = commandpost
 	.option("--no-editorconfig", "don't read a .editorconfig")
 	.option("--no-tsfmt", "don't read a tsfmt.json")
 	.option("--verbose", "makes output more verbose")
+  .option("--stdin", "reads input from stdin")
 	.action((opts, args)=> {
 		var replace = !!opts.replace;
 		var tslint = !!opts.tslint;
@@ -47,14 +48,21 @@ var root = commandpost
 				console.log("tsfmt:        " + (tsfmt ? "ON" : "OFF"));
 			}
 
-			lib
-				.processFiles(args.files, {
-					replace: replace,
-					tslint: tslint,
-					editorconfig: editorconfig,
-					tsfmt: tsfmt
-				})
-				.catch(errorHandler);
+      if(opts.stdin) {
+        lib.processStdin()
+      }
+
+      else {
+        lib
+          .processFiles(args.files, {
+            replace: replace,
+            tslint: tslint,
+            editorconfig: editorconfig,
+            tsfmt: tsfmt
+          })
+          .catch(errorHandler);
+      }
+
 		}
 	});
 
